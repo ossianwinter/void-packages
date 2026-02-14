@@ -1,0 +1,19 @@
+# Template file for 'font-berkeley-mono'
+pkgname=font-berkeley-mono
+version=2.002
+revision=1
+depends="font-util"
+short_desc="U.S. Graphics Company’s TX-02 typeface, Berkeley Mono"
+maintainer="Ossian Winter <ossian@winter.vg>"
+license="custom"
+homepage="https://usgraphics.com/products/berkeley-mono"
+font_dirs="/usr/share/fonts/OTF /usr/share/fonts/TTF"
+provides="font:monospace-0_1"
+
+do_install() {
+	vmkdir usr/share/fonts/OTF
+	vcopy "$FILESDIR/OTF/*.otf" usr/share/fonts/OTF
+
+	vmkdir usr/share/fonts/TTF
+	vcopy "$FILESDIR/Variable/*.ttf" usr/share/fonts/TTF
+}
