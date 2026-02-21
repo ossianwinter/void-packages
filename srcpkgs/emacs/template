@@ -1,7 +1,7 @@
 # Template file for 'emacs'
 pkgname=emacs
-version=30.2
-revision=2
+version=31.0.50
+revision=1
 create_wrksrc=required
 build_style=gnu-configure
 configure_args="--with-file-notification=inotify --with-modules
@@ -12,7 +12,7 @@ configure_args="--with-file-notification=inotify --with-modules
  $(vopt_with sqlite sqlite3) $(vopt_with treesitter tree-sitter)
  $(vopt_with nativecomp native-compilation=aot)"
 hostmakedepends="pkg-config tar texinfo"
-makedepends="ncurses-devel libXaw-devel libXi-devel gtk+3-devel
+makedepends="autoconf ncurses-devel libXaw-devel libXi-devel gtk+3-devel
  dbus-devel acl-devel
  $(vopt_if jpeg libjpeg-turbo-devel) $(vopt_if tiff tiff-devel)
  $(vopt_if gif giflib-devel) $(vopt_if png libpng-devel)
@@ -30,8 +30,8 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="GPL-3.0-or-later"
 homepage="http://www.gnu.org/software/emacs/"
 changelog="https://www.gnu.org/savannah-checkouts/gnu/emacs/emacs.html#Releases"
-distfiles="${GNU_SITE}/${pkgname}/${pkgname}-${version}.tar.xz"
-checksum=b3f36f18a6dd2715713370166257de2fae01f9d38cfe878ced9b1e6ded5befd9
+distfiles="https://github.com/emacs-mirror/emacs/archive/f2b99c4c0b1cca4360a6c516ca99e716e531fae5.zip"
+checksum=9fae81656a6bd2255f0677cb48eca62ab25d1d10395ff58febbe7767ea35bbb7
 nocross=yes
 nopie=yes
 
@@ -51,7 +51,7 @@ build_options_default="cairo gif gmp gnutls harfbuzz jpeg m17n nativecomp
  png sound sqlite svg tiff treesitter webp xml xpm"
 
 post_extract() {
-	# Just configuring in different directories results in
+	# Just configuring in different directories results inc
 	# spurious emacs rebuilds with incompatible build numbers.
 	cp -a emacs-* nox
 	cp -a emacs-* x11
@@ -61,18 +61,22 @@ post_extract() {
 
 do_configure() {
 	cd $wrksrc/nox
+	./autogen.sh
 	./configure --without-x $(vopt_with dbus) ${configure_args} \
 		--without-native-compilation
 
 	cd $wrksrc/x11
+	./autogen.sh
 	./configure --with-x-toolkit=athena --without-toolkit-scroll-bars \
 		$(vopt_with dbus) --without-gconf --without-gsettings \
 		${configure_args}
 
 	cd $wrksrc/gtk3
+	./autogen.sh
 	./configure --with-x-toolkit=gtk3 ${configure_args}
 
 	cd $wrksrc/pgtk
+	./autogen.sh
 	./configure --with-pgtk ${configure_args}
 }
 
